@@ -9,6 +9,10 @@ Feature: User credits recharge
         And the user provides a recharge <amount>
         Then the system processes the payment
         And the system adds the selected <amount> to the user's account balance
+        Examples: Valid amounts
+            | amount |
+            | 10     |
+            | 45     |
 
     Scenario: Invalid recharge amount
         Given the user is logged in

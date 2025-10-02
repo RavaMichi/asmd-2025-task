@@ -4,7 +4,7 @@ Feature: Disconnecting from an Ebike
     I want to disconnect from a ebike
 
     Scenario: Disconnect from currently connected ebike
-        Given the user is currently connected to an ebike with ID "EBIKE_ID"
+        Given the user is currently connected to an ebike with ID "bike_id"
         When the user requests to disconnect from the currently connected ebike
         Then the system verifies the user's current connection to the ebike
         And the system computes the price for the rental and deducts it from the user credits
