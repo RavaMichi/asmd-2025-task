@@ -12,8 +12,13 @@ public class LoginLogicStub implements LoginLogic {
     @Override
     public LoginStatus login(String username, String password) {
         if (username.equals("admin") && password.equals("admin")) {
+            // good
             return new LoginOk(200, "admin-token");
+        } else if (username.equals("crash")) {
+            // crash: unknown reply
+            return new LoginUnknown();
         } else {
+            // bad credentials
             return new LoginError(400);
         }
     }

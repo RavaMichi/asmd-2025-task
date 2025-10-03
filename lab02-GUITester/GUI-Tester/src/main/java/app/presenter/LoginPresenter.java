@@ -15,7 +15,7 @@ public class LoginPresenter {
         switch (model.login(username, password)) {
             case LoginOk ok -> setViewMessage(ok.getStatus(), "You are successfully logged in!");
             case LoginError err -> setViewMessage(err.getStatus(), "Incorrect username or password.");
-            default -> setViewMessage(500, "An error occurred in login");
+            default -> setViewMessage(500, "An error occurred in login.");
         }
     }
     private void setViewMessage(int status, String msg) {

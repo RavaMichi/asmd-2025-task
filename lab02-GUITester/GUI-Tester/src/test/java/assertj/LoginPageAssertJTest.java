@@ -70,4 +70,17 @@ public class LoginPageAssertJTest {
         // assert the message label text
         window.label("message").requireText("Incorrect username or password. (Code: 400)");
     }
+    /**
+     * Simulate an error during login
+     */
+    @Test
+    public void testLoginError() {
+        // simulate user typing and clicking
+        window.textBox("username").enterText("crash");
+        window.textBox("password").enterText("any");
+        window.button("login").click();
+
+        // assert the message label text
+        window.label("message").requireText("An error occurred in login. (Code: 500)");
+    }
 }
