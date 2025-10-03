@@ -25,6 +25,7 @@ public class LoginPage extends JFrame {
         int row = 0;
 
         messageField = new JLabel();
+        messageField.setName("message");
         gbc.gridx = 0; gbc.gridy = row;
         gbc.gridwidth = 2;
         panel.add(messageField, gbc);

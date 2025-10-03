@@ -13,10 +13,10 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Interface" />
         <option value="Record" />
         <option value="Enum" />
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -38,6 +38,8 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.App.executor": "Run",
+    "JUnit.LoginPageAssertJTest.testSuccessfulLogin.executor": "Run",
+    "JUnit.LoginPageAssertJTest.testUnsuccessfulLogin.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
@@ -46,7 +48,7 @@
     "onboarding.tips.debug.path": "D:/Programs69/Homeworks/ASMD/asmd-2025-task/lab02-GUITester/GUI-Tester/src/main/java/org/example/Main.java"
   }
 }]]></component>
-  <component name="RunManager">
+  <component name="RunManager" selected="JUnit.LoginPageAssertJTest.testSuccessfulLogin">
     <configuration name="App" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="assertj.App" />
       <module name="GUI-Tester" />
@@ -60,8 +62,42 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="LoginPageAssertJTest.testSuccessfulLogin" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="GUI-Tester" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="assertj.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="assertj" />
+      <option name="MAIN_CLASS_NAME" value="assertj.LoginPageAssertJTest" />
+      <option name="METHOD_NAME" value="testSuccessfulLogin" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="LoginPageAssertJTest.testUnsuccessfulLogin" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="GUI-Tester" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="assertj.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="assertj" />
+      <option name="MAIN_CLASS_NAME" value="assertj.LoginPageAssertJTest" />
+      <option name="METHOD_NAME" value="testUnsuccessfulLogin" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.LoginPageAssertJTest.testSuccessfulLogin" />
+        <item itemvalue="JUnit.LoginPageAssertJTest.testUnsuccessfulLogin" />
         <item itemvalue="Application.App" />
       </list>
     </recent_temporary>
