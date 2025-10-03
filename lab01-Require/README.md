@@ -185,3 +185,26 @@ Extensions:
     1a: Ebike sends data in an unexpected format
         1. System ignores message
 ```
+
+### Quality Attributes
+
+Le user stories e gli scenarios riescono a descrivere adeguatamente i requisiti funzionali del servizio, tuttavia non reiscono a esprimere le qualita' architetturali che il sistema deve soddisfare per poter funzionare correttamente. Il sistema, come da requisiti, deve essere disponibile e reattivo. Per poter testare queste proprieta', si sono scritti dei *Quality Attribute Scenarios*:
+
+| Quality Attribute: | Availability |
+| ------ | ------ |
+| Source | Server hosting a service |
+| Stimulus | Server fails |
+| Artifact | Server |
+| Environment | Normal operation |
+| Response | Server restarts |
+| Response measure | Service downtime less than 1 min |
+
+| Quality Attribute: | Responsiveness |
+| ------ | ------ |
+| Source | Server hosting a service |
+| Stimulus | Server receives a request |
+| Artifact | Server |
+| Environment | Overloaded operation |
+| Response | Server replies (with correct values or with error) |
+| Response measure | Request is managed in less than 5 sec |
+
