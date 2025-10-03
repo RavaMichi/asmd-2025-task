@@ -1,14 +1,12 @@
 package app.model;
 
-public class LoginOk extends LoginStatus {
-
-    private final String token;
-    protected LoginOk(String token) {
-        super(200);
-        this.token = token;
-    }
+public record LoginOk(int status, String token) implements LoginStatus {
 
     public String getToken() {
         return token;
+    }
+    @Override
+    public int getStatus() {
+        return status;
     }
 }

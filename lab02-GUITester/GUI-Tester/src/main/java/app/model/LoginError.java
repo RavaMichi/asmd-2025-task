@@ -1,8 +1,8 @@
 package app.model;
 
-public class LoginError extends LoginStatus {
-
-    protected LoginError(int code) {
-        super(code);
+public record LoginError(int status) implements LoginStatus {
+    @Override
+    public int getStatus() {
+        return status;
     }
 }
