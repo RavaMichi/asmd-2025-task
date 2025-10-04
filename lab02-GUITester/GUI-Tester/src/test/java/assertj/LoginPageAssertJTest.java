@@ -11,7 +11,7 @@ import app.presenter.LoginPresenter;
 import app.view.LoginPage;
 
 /**
- * Test the GUI for login using AssertJ
+ * AssertJ tests for LoginPage
  */
 public class LoginPageAssertJTest {
     private FrameFixture window;
