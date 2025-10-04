@@ -23,6 +23,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/../.." value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
   <component name="ProjectCodeStyleSettingsMigration">
@@ -37,22 +42,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.App.executor": "Run",
-    "JUnit.LoginPageAssertJTest.testSuccessfulLogin.executor": "Run",
-    "JUnit.LoginPageAssertJTest.testUnsuccessfulLogin.executor": "Run",
-    "JUnit.LoginPageSikuliTest.executor": "Run",
-    "JUnit.LoginPageSikuliTest.testSuccessfulLogin.executor": "Run",
-    "JUnit.LoginPageSikuliTest.testUnsuccessfulLogin.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "test-gui-ci",
-    "kotlin-language-version-configured": "true",
-    "onboarding.tips.debug.path": "D:/Programs69/Homeworks/ASMD/asmd-2025-task/lab02-GUITester/GUI-Tester/src/main/java/org/example/Main.java"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.App.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.LoginPageAssertJTest.testSuccessfulLogin.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.LoginPageAssertJTest.testUnsuccessfulLogin.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.LoginPageSikuliTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.LoginPageSikuliTest.testSuccessfulLogin.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.LoginPageSikuliTest.testUnsuccessfulLogin.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;test-gui-ci&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;D:/Programs69/Homeworks/ASMD/asmd-2025-task/lab02-GUITester/GUI-Tester/src/main/java/org/example/Main.java&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\Programs69\Homeworks\ASMD\asmd-2025-task\lab02-GUITester\GUI-Tester\src\test\resources\images" />
