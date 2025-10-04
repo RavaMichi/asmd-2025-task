@@ -1,4 +1,4 @@
-package assertj;
+package view;
 
 import app.model.LoginLogic;
 import app.presenter.LoginPresenter;

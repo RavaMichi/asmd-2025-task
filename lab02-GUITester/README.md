@@ -33,6 +33,7 @@ AssertJ permette di scrivere test puliti e organizzati, si integra inoltre molto
 
 Si sono fatti tre test per verificare il corretto funzionamento di un login giusto, un login con credenziali sbagliate, e un login con errore sul server.
 
+Di seguito sono mostrati i test fatti sulla LoginPage ([LoginPageAssertJTest](./GUI-Tester/src/test/java/view/LoginPageAssertJTest.java)):
 ```java
     @Before
     public void setUp() {
@@ -85,3 +86,96 @@ Si sono fatti tre test per verificare il corretto funzionamento di un login gius
 
 ### SikuliX
 
+Con SikuliX si possono scrivere test che non richiedono la conoscienza della struttura sottostante, infatti il suo metodo di test si basa puramente sui pixel nello schermo e testa attraverso il pattern matching.
+
+I test son SikuliX risultano semplici da capire e da scrivere, tuttavia richiedono delle immagini di riferimento per poter eseguire il pattern mathcing: per ogni componente con il quale si interagisce, bisogna fornire la sua immagine, per cui il setup del test e' piu' complesso. Una volta ottenute queste immagine lo sviluppo dei test risulta molto semplificato e simula fedelmente l'interazione dell'utente.
+
+Di seguito sono mostrati i test fatti sulla LoginPage ([LoginPageSikuliTest](./GUI-Tester/src/test/java/view/LoginPageSikuliTest.java)): 
+
+```java
+ @Before
+    public void setUp() throws Exception {
+        // Launch the LoginPage on EDT and make it visible at a predictable location (0,0)
+        SwingUtilities.invokeAndWait(() -> {
+            LoginLogic stub = new LoginLogicStub();
+            page = new LoginPage(400, 200);
+            LoginPresenter presenter = new LoginPresenter(stub, page);
+            page.setPresenter(presenter);
+
+            page.setLocation(0, 0);
+            page.setVisible(true);
+        });
+
+        // compute the region covering the window so Sikuli searches only inside it
+        final Point[] loc = new Point[1];
+        final Dimension[] size = new Dimension[1];
+        SwingUtilities.invokeAndWait(() -> {
+            // getLocationOnScreen requires the component to be visible
+            loc[0] = page.getLocationOnScreen();
+            size[0] = page.getSize();
+        });
+
+        appRegion = new Region(loc[0].x, loc[0].y, size[0].width, size[0].height);
+    }
+
+    // used to test any message response from the page
+    private void testMessagePattern(String username, String password, URL messageImageURL) {
+        try {
+            // Patterns: use a high similarity threshold for buttons/fields that are crisp
+            Pattern userPattern = new Pattern(ClassLoader.getSystemResource(USER_IMG)).similar(0.92);
+            Pattern passPattern = new Pattern(ClassLoader.getSystemResource(PASS_IMG)).similar(0.92);
+            Pattern loginPattern = new Pattern(ClassLoader.getSystemResource(LOGIN_IMG)).similar(0.92);
+            Pattern messagePattern = new Pattern(messageImageURL).similar(0.95);
+
+            appRegion.click(userPattern);
+            screen.type(username); // add username
+
+            appRegion.click(passPattern);
+            screen.type(password); // add password
+
+            appRegion.click(loginPattern); // login
+
+            // wait for success message
+            appRegion.wait(messagePattern, 5); // throws FindFailed if not found
+
+            assertNotNull("output message should be visible", appRegion.exists(messagePattern));
+        } catch (FindFailed ff) {
+            fail("could not find message: " + ff.getMessage());
+        }
+    }
+
+    @Test
+    public void testSuccessfulLogin() {
+        testMessagePattern(
+                "admin",
+                "admin",
+                ClassLoader.getSystemResource(SUCCESS_IMG)
+        );
+    }
+
+    @Test
+    public void testUnsuccessfulLogin() {
+        testMessagePattern(
+                "wrong",
+                "wrong",
+                ClassLoader.getSystemResource(FAIL_IMG)
+        );
+    }
+
+    @Test
+    public void testLoginError() {
+        testMessagePattern(
+                "crash",
+                "any_pwd",
+                ClassLoader.getSystemResource(ERROR_IMG)
+        );
+    }
+```
+
+### CI workflow
+
+Con queste librerie e' possibile impostare dei test automatici per la continuos integration. Il setup risulta pero' molto complesso, in quanto richiede di impostare display virtuali in un ambiete privo di UI per eseguire il test.
+
+Il file [ci.yaml](./GUI-Tester/.github/workflows/ci.yaml) contiene un job per eseguire i test delle due classi di test precedentemente mostrate.
+
+## Conclusioni
