@@ -42,7 +42,7 @@ jobs:
           xdpyinfo -display :99 || true
 
       - name: Run Maven GUI tests (AssertJ-Swing + SikuliX)
-        run:
+        run: |
           cd lab02-GUITester/GUI-Tester
           mvn -B -Djava.awt.headless=false -DforkCount=1 -DreuseForks=false test
         env:
