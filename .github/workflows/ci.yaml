@@ -41,10 +41,9 @@ jobs:
           echo "DISPLAY=$DISPLAY"
           xdpyinfo -display :99 || true
 
-      - name: Move to project
-        run: cd lab02-GUITester/GUI-Tester
-
       - name: Run Maven GUI tests (AssertJ-Swing + SikuliX)
-        run: mvn -B -Djava.awt.headless=false -DforkCount=1 -DreuseForks=false test
+        run:
+          cd lab02-GUITester/GUI-Tester
+          mvn -B -Djava.awt.headless=false -DforkCount=1 -DreuseForks=false test
         env:
           DISPLAY: :99
