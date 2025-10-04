@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="961ed77c-e620-4a69-80a6-6c386b01753a" name="Changes" comment="" />
+    <list default="true" id="961ed77c-e620-4a69-80a6-6c386b01753a" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../../.github/workflows/ci.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../../.github/workflows/ci.yaml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -46,7 +48,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "test-gui-ci",
     "kotlin-language-version-configured": "true",
     "onboarding.tips.debug.path": "D:/Programs69/Homeworks/ASMD/asmd-2025-task/lab02-GUITester/GUI-Tester/src/main/java/org/example/Main.java"
   }
