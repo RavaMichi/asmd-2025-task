@@ -29,7 +29,5 @@ jobs:
       - name: Run maven headless test
         uses: coactions/setup-xvfb@v1
         with:
-          run: |
-            cd lab02-GUITester/GUI-Tester
-            mvn test
+          run: cd lab02-GUITester/GUI-Tester && mvn test
           working-directory: ./
