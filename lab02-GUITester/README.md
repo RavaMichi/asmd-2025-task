@@ -179,3 +179,13 @@ Con queste librerie e' possibile impostare dei test automatici per la continuos 
 Il file [ci.yaml](./GUI-Tester/.github/workflows/ci.yaml) contiene un job per eseguire i test delle due classi di test precedentemente mostrate.
 
 ## Conclusioni
+
+Il confronto mette in luce un trade-off chiaro: *AssertJ-Swing* offre test puliti, veloci e facilmente integrabili in JUnit/CI, ma non verifica l’aspetto visivo; *SikuliX* riproduce fedelmente l’interazione utente e cattura dettagli grafici, ma richiede immagini di riferimento, ambiente di esecuzione più complesso e risulta più fragile a cambi di risoluzione, tema, font etc.
+
+Tenendo a mente queste considerazione, il workflow consigliato e':
+
+- Usare AssertJ-Swing come base: e' ottimo per testare i componenti della UI, e' affidabile e si integra facilmente con la CI. Richiede solamente di progettare la GUI per la testabilita' (ha bisogno del name sui vari componenti da testare).
+
+- Integrare SikuliX in modo selettivo solo per test end-to-end visivi critici oppure dove non e' possibile analizzare i componenti della UI (per esempio: un canvas di un simulatore).
+
+- Impostare la CI con display virtuali.
