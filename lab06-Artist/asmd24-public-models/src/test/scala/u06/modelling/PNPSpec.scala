@@ -17,7 +17,6 @@ class PNPSpec extends AnyFunSuite:
   import TestPlace.*
 
   test("PNP should first fire transitions with higher priority"):
-
     val testPNP = PetriNetWithPriority[TestPlace, Int](
       0 | MSet(P1) ~~> MSet(P2),
       1 | MSet(P2) ~~> MSet(P3),
@@ -29,7 +28,6 @@ class PNPSpec extends AnyFunSuite:
       Set(expected)
 
   test("PNP should work as a normal Petri Net if transitions have the same priority"):
-
     val testPNP = PetriNetWithPriority[TestPlace, Int](
       0 | MSet(P1) ~~> MSet(P2),
       0 | MSet(P1) ~~> MSet(P3),
@@ -46,3 +44,14 @@ class PNPSpec extends AnyFunSuite:
 
     testPNP.paths(MSet(P1), 3).toSet should be:
       Set(expected1, expected2, expected3, expected4)
+
+  test("PNP should work with inhibitor arcs"):
+    val testPNP = PetriNetWithPriority[TestPlace, Int](
+      0 | MSet(P3) ~~> MSet(),
+      1 | MSet(P1) ~~> MSet(P2, P3) ^^^ MSet(P3),
+    ).toSystem
+
+    val expected = List(MSet(P1, P1), MSet(P1, P2, P3), MSet(P1, P2), MSet(P2, P2, P3), MSet(P2, P2))
+
+    testPNP.paths(MSet(P1, P1), 5).toSet should be:
+      Set(expected)
