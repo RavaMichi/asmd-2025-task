@@ -13,7 +13,7 @@ object PetriNetWithPriority:
       .groupBy[I](_.priority)
       .toSeq
       .sortWith((a, b) => ordering.gt(a._1, b._1))
-      .map((i, trn) => PetriNet(trn.map(_.transition)*))
+      .map((i, trn) => trn.map(_.transition).toSet)
 
   extension [P](pnp: PetriNetWithPriority[P])
     def toSystem: System[Marking[P]] = m => pnp match
