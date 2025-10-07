@@ -3,7 +3,6 @@ package u06.modelling
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers.*
 
-import scala.runtime.RichInt
 class PNPSpec extends AnyFunSuite:
 
   import PetriNet.*
