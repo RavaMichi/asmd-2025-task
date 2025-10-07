@@ -27,3 +27,22 @@ class PNPSpec extends AnyFunSuite:
 
     testPNP.paths(MSet(P1, P1, P1),7).toSet should be:
       Set(expected)
+
+  test("PNP should work as a normal Petri Net if transitions have the same priority"):
+
+    val testPNP = PetriNetWithPriority[TestPlace, Int](
+      0 | MSet(P1) ~~> MSet(P2),
+      0 | MSet(P1) ~~> MSet(P3),
+      0 | MSet(P2) ~~> MSet(P1),
+      0 | MSet(P2) ~~> MSet(P3),
+      0 | MSet(P3) ~~> MSet(P1),
+      0 | MSet(P3) ~~> MSet(P2),
+    ).toSystem
+
+    val expected1 = List(MSet(P1), MSet(P2), MSet(P3))
+    val expected2 = List(MSet(P1), MSet(P3), MSet(P1))
+    val expected3 = List(MSet(P1), MSet(P2), MSet(P1))
+    val expected4 = List(MSet(P1), MSet(P3), MSet(P2))
+
+    testPNP.paths(MSet(P1), 3).toSet should be:
+      Set(expected1, expected2, expected3, expected4)
