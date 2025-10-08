@@ -14,17 +14,25 @@ object ColoredPetriNet:
 
   extension [P, C](cpn: ColoredPetriNet[P, C])
     def toSystem: System[Marking[(P, C)]] = m =>
-      val mm = m.asList.toMap
-      def isInhibited(t: Trn[P]): Boolean = mm.keys.exists(t.inh.asList.contains)
-      def guardCheckFailed(guard: C => Boolean): Boolean = !mm.values.exists(guard)
+      def isInhibited(t: Trn[P]): Boolean = m.asList.map(_._1).exists(t.inh.asList.contains)
       cpn
         .map { case ColoredTrn(transition, guard, transform) => (transition, guard, transform) }
         .map((tr, g, f) =>
-          val cond = mm.filter((p, c) => tr.cond.asList.contains(p))
-          if isInhibited(tr) || guardCheckFailed(g) || cond.isEmpty then
+          val cond = m.asList.filter((p, c) => tr.cond.asList.contains(p) && g(c))
+          println(cond)
+          if isInhibited(tr) || cond.isEmpty then
             List.empty
           else
-            val eff = tr.eff.asList.map(p => (p, f(cond.values.toSeq)))
-            mm.removedAll(cond.keys).toList ++ eff
+            val eff = tr.eff.asList.map(p => (p, f(cond.map(_._2))))
+            println(eff)
+            m.asList.filterNot(cond.contains) ++ eff
         ).filterNot(_.isEmpty)
         .map(MSet.ofList)
+
+  extension [P, C](ctr: ColoredTrn[P, C])
+    infix def when(guard: C => Boolean): ColoredTrn[P, C] =
+      ColoredTrn(
+        ctr.transition,
+        c => ctr.guard(c) && guard(c),
+        ctr.transform
+      )
