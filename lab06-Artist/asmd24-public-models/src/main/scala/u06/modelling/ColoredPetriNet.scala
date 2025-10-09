@@ -10,30 +10,23 @@ object ColoredPetriNet:
   def apply[P, C](transitions: ColoredTrn[P, C]*): ColoredPetriNet[P, C] = transitions.toSet
 
   // helper function
-  def combinations[A](list: Set[A], size: Int): Set[Set[A]] = size match
-    case 0 => Set()
-    case 1 => list.map(Set(_))
-    case s =>
-      for
-        x <- list
-        comb <- combinations(list.filter(x != _), s - 1)
-      yield comb + x
-
-  def preconditionWithColors[P, C](state: List[(P, C)], cond: List[P]): Set[MSet[(P, C)]] =
+  private def preconditionWithColors[P, C](state: List[(P, C)], cond: List[P]): Set[MSet[(P, C)]] =
+    // compute all possible combinations of places and colors \in state and \in cond
     state
       .filter(x => cond.contains(x._1))
       .flatMap(x => cond diff Seq(x._1) match
         case List() => Set(MSet(x))
         case m => preconditionWithColors(state diff Seq(x), m).map(MSet(x).union(_))
       ).toSet
-  def effectWithColors[P, C](eff: List[P], cond: List[(P, C)])(function: Seq[C] => C): MSet[(P, C)] =
+  private def effectWithColors[P, C](eff: List[P], cond: List[(P, C)])(function: Seq[C] => C): MSet[(P, C)] =
+    // compute the color of the effects
     MSet.ofList(eff.map(e => (e, function(cond.map(_._2)))))
-  
+
   extension [P, C](cpn: ColoredPetriNet[P, C])
     def toSystem: System[Marking[(P, C)]] = m =>
       def isNotInhibited(t: Trn[P]) = !m.asList.map(_._1).exists(t.inh.asList.contains)
       def passGuard(s: MSet[(P, C)], guard: C => Boolean) = s.asList.map(_._2).forall(guard)
-      for 
+      for
         ColoredTrn(trn, guard, f) <- cpn
         if isNotInhibited(trn) // check inhibition
         cond <- preconditionWithColors(m.asList, trn.cond.asList)
@@ -51,8 +44,10 @@ object ColoredPetriNet:
     case OnTransition(tr: Seq[C] => C)
 
   import ColorAttribute.*
-  def when[C](guard: PartialFunction[C, Boolean]): Guard[C] = Guard(c => guard.applyOrElse(c, _ => false))
-  infix def onTransition[C](tr: Seq[C] => C): OnTransition[C] = OnTransition(tr)
+  def when[C](guard: PartialFunction[C, Boolean]): Guard[C] = 
+    Guard(c => guard.applyOrElse(c, _ => false))
+  def onTransition[C](tr: PartialFunction[Seq[C], C]): OnTransition[C] = 
+    OnTransition(t => tr.applyOrElse(t, _ => throw IllegalArgumentException("The transition color update function is incomplete")))
 
   extension [P](tr: Trn[P])
     infix def |[C](cc: ColorAttribute[C]*): ColoredTrn[P, C] =
