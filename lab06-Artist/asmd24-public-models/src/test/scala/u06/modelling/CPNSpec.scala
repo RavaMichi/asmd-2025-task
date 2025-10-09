@@ -76,9 +76,18 @@ class CPNSpec extends AnyFunSuite:
     val testCPN = ColoredPetriNet[Place, Color](
       MSet(P1) ~~> MSet(P2) >> when[Color] { case Red(0) => true } >> when[Color] { case Red(2) => true },
     ).toSystem
-    
+
     val expected1 = List(MSet(P1 -> Red(0), P1 -> Red(1), P1 -> Red(2)), MSet(P2 -> Red(0), P1 -> Red(1), P1 -> Red(2)))
     val expected2 = List(MSet(P1 -> Red(0), P1 -> Red(1), P1 -> Red(2)), MSet(P1 -> Red(0), P1 -> Red(1), P2 -> Red(2)))
 
     testCPN.paths(MSet(P1 -> Red(0), P1 -> Red(1), P1 -> Red(2)), 2).toSet should be:
       Set(expected1, expected2)
+
+  test("CPN should apply only last defined function"):
+    def f(s: String): PartialFunction[Seq[Color], Color] = { case Seq(Blue(_)) => Blue(s) }
+    val testCPN = ColoredPetriNet[Place, Color](
+      MSet(P1) ~~> MSet(P2) >> onTransition[Color](f("third")),
+    ).toSystem
+
+    testCPN.paths(MSet(P1 -> Blue("start")), 2).toSet should be:
+      Set(List(MSet(P1 -> Blue("start")), MSet(P2 -> Blue("third"))))

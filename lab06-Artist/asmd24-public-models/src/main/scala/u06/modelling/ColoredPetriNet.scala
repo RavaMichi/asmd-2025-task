@@ -4,7 +4,7 @@ import u06.utils.MSet
 
 object ColoredPetriNet:
   import PetriNet.*
-  case class ColoredTrn[P, C](transition: Trn[P], guard: C => Boolean, transform: Seq[C] => C)
+  case class ColoredTrn[P, C](transition: Trn[P], guard: Option[C => Boolean], transform: Seq[C] => C)
   type ColoredPetriNet[P, C] = Set[ColoredTrn[P, C]]
 
   def apply[P, C](transitions: ColoredTrn[P, C]*): ColoredPetriNet[P, C] = transitions.toSet
@@ -25,7 +25,7 @@ object ColoredPetriNet:
   extension [P, C](cpn: ColoredPetriNet[P, C])
     def toSystem: System[Marking[(P, C)]] = m =>
       def isNotInhibited(t: Trn[P]) = !m.asList.map(_._1).exists(t.inh.asList.contains)
-      def passGuard(s: MSet[(P, C)], guard: C => Boolean) = s.asList.map(_._2).forall(guard)
+      def passGuard(s: MSet[(P, C)], guard: Option[C => Boolean]) = s.asList.map(_._2).forall(guard.getOrElse(_ => true))
       for
         ColoredTrn(trn, guard, f) <- cpn
         if isNotInhibited(trn) // check inhibition
@@ -35,9 +35,7 @@ object ColoredPetriNet:
       yield out union effectWithColors(trn.eff.asList, cond.asList)(f)
 
   given coloredTrnConversion[P, C]: Conversion[Trn[P], ColoredTrn[P, C]] with
-    override def apply(x: Trn[P]): ColoredTrn[P, C] = ColoredTrn(x, c => true, _.head)
-
-
+    override def apply(x: Trn[P]): ColoredTrn[P, C] = ColoredTrn(x, Option.empty, _.head)
 
   enum ColorAttribute[C]:
     case Guard(guard: C => Boolean)
@@ -51,13 +49,5 @@ object ColoredPetriNet:
 
   extension [P, C](ctr: ColoredTrn[P, C])
     infix def >>(cc: ColorAttribute[C]): ColoredTrn[P, C] = cc match
-      case Guard(g)         => ctr.copy(guard = c => ctr.guard(c) || g(c))
+      case Guard(g)         => ctr.copy(guard = Option(c => g(c) || ctr.guard.getOrElse(_ => false)(c) || g(c)))
       case OnTransition(tr) => ctr.copy(transform = tr)
-      
-  extension [P](tr: Trn[P])
-    infix def >>[C](cc: ColorAttribute[C]*): ColoredTrn[P, C] =
-      ColoredTrn(
-        tr,
-        c => cc.collect { case x: Guard[C] => x }.exists(_.guard(c)),
-        cc.collectFirst { case x: OnTransition[C] => x }.map(_.tr).getOrElse(_.head)
-      )
