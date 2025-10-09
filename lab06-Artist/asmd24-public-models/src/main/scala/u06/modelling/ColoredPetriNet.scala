@@ -51,13 +51,13 @@ object ColoredPetriNet:
 
   extension [P, C](ctr: ColoredTrn[P, C])
     infix def >>(cc: ColorAttribute[C]): ColoredTrn[P, C] = cc match
-      case Guard(g)         => ctr.copy(guard = c => ctr.guard(c) && g(c))
+      case Guard(g)         => ctr.copy(guard = c => ctr.guard(c) || g(c))
       case OnTransition(tr) => ctr.copy(transform = tr)
       
   extension [P](tr: Trn[P])
     infix def >>[C](cc: ColorAttribute[C]*): ColoredTrn[P, C] =
       ColoredTrn(
         tr,
-        c => cc.collect { case x: Guard[C] => x }.forall(_.guard(c)),
+        c => cc.collect { case x: Guard[C] => x }.exists(_.guard(c)),
         cc.collectFirst { case x: OnTransition[C] => x }.map(_.tr).getOrElse(_.head)
       )
