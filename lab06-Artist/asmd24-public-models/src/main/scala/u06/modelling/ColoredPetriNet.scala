@@ -21,15 +21,10 @@ object ColoredPetriNet:
 
   def computeColorsOfPrecondition[P, C](state: List[(P, C)], cond: List[P]): Set[MSet[(P, C)]] =
     state
-      .flatMap(x => cond.find(_ == x._1).map(c => x))
-      .flatMap(x =>
-        val newCond = cond diff Seq(x._1)
-        if newCond.isEmpty then
-          Set(MSet(x))
-        else
-          val newState = state diff Seq(x)
-          computeColorsOfPrecondition(newState, newCond)
-            .map(_ union MSet(x))
+      .filter(x => cond.contains(x._1))
+      .flatMap(x => cond diff Seq(x._1) match
+        case List() => Set(MSet(x))
+        case m => computeColorsOfPrecondition(state diff Seq(x), m).map(MSet(x).union(_))
       ).toSet
 
   extension [P, C](cpn: ColoredPetriNet[P, C])
