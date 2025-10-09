@@ -19,30 +19,27 @@ object ColoredPetriNet:
         comb <- combinations(list.filter(x != _), s - 1)
       yield comb + x
 
-  def computeColorsOfPrecondition[P, C](state: List[(P, C)], cond: List[P]): Set[MSet[(P, C)]] =
+  def preconditionWithColors[P, C](state: List[(P, C)], cond: List[P]): Set[MSet[(P, C)]] =
     state
       .filter(x => cond.contains(x._1))
       .flatMap(x => cond diff Seq(x._1) match
         case List() => Set(MSet(x))
-        case m => computeColorsOfPrecondition(state diff Seq(x), m).map(MSet(x).union(_))
+        case m => preconditionWithColors(state diff Seq(x), m).map(MSet(x).union(_))
       ).toSet
-
+  def effectWithColors[P, C](eff: List[P], cond: List[(P, C)])(function: Seq[C] => C): MSet[(P, C)] =
+    MSet.ofList(eff.map(e => (e, function(cond.map(_._2)))))
+  
   extension [P, C](cpn: ColoredPetriNet[P, C])
     def toSystem: System[Marking[(P, C)]] = m =>
-      def isInhibited(t: Trn[P]): Boolean = m.asList.map(_._1).exists(t.inh.asList.contains)
-      cpn
-        .map { case ColoredTrn(transition, guard, transform) => (transition, guard, transform) }
-        .map((tr, g, f) =>
-          val cond = m.asList.filter((p, c) => tr.cond.asList.contains(p) && g(c))
-          println(cond)
-          if isInhibited(tr) || cond.isEmpty then
-            List.empty
-          else
-            val eff = tr.eff.asList.map(p => (p, f(cond.map(_._2))))
-            println(eff)
-            m.asList.filterNot(cond.contains) ++ eff
-        ).filterNot(_.isEmpty)
-        .map(MSet.ofList)
+      def isNotInhibited(t: Trn[P]) = !m.asList.map(_._1).exists(t.inh.asList.contains)
+      def passGuard(s: MSet[(P, C)], guard: C => Boolean) = s.asList.map(_._2).forall(guard)
+      for 
+        ColoredTrn(trn, guard, f) <- cpn
+        if isNotInhibited(trn) // check inhibition
+        cond <- preconditionWithColors(m.asList, trn.cond.asList)
+        if passGuard(cond, guard) // check color guard
+        out <- m extract cond
+      yield out union effectWithColors(trn.eff.asList, cond.asList)(f)
 
   given coloredTrnConversion[P, C]: Conversion[Trn[P], ColoredTrn[P, C]] with
     override def apply(x: Trn[P]): ColoredTrn[P, C] = ColoredTrn(x, c => true, _.head)
