@@ -34,7 +34,7 @@ class CPNSpec extends AnyFunSuite:
 
   test("CPN should enable transitions when guard check passed"):
     val testCPN = ColoredPetriNet[Place, Color](
-      MSet(P1) ~~> MSet(P2) | when { case Red(_) => true },
+      MSet(P1) ~~> MSet(P2) >> when { case Red(_) => true },
       MSet(P2) ~~> MSet(P3),
     ).toSystem
 
@@ -46,7 +46,7 @@ class CPNSpec extends AnyFunSuite:
   test("CPN should update the color when firing a transition"):
 
     val testCPN = ColoredPetriNet[Place, Color](
-      MSet(P1) ~~> MSet(P2) | onTransition {
+      MSet(P1) ~~> MSet(P2) >> onTransition {
         case Seq(Red(i)) => Red(i + 1)
         case Seq(Blue(s)) => Blue(s + "+")
       },
@@ -62,7 +62,7 @@ class CPNSpec extends AnyFunSuite:
   test("CPN should throw an error if it tries to apply an incomplete function"):
 
     val incompleteCPN = ColoredPetriNet[Place, Color](
-      MSet(P1, P1) ~~> MSet(P2) | onTransition { case Seq(Red(i)) => Red(i + 1) }, // error: incomplete transformation
+      MSet(P1, P1) ~~> MSet(P2) >> onTransition { case Seq(Red(i)) => Red(i + 1) }, // error: incomplete transformation
     ).toSystem
 
     an [IllegalArgumentException] should be thrownBy:
@@ -71,7 +71,7 @@ class CPNSpec extends AnyFunSuite:
   test("CPN should throw an error if it tries to apply too many parameters to the function"):
 
     val fewParamsCPN = ColoredPetriNet[Place, Color](
-      MSet(P1) ~~> MSet(P2) | onTransition(_(3)), // error: too many params accessed
+      MSet(P1) ~~> MSet(P2) >> onTransition(_(3)), // error: too many params accessed
     ).toSystem
 
     an [IndexOutOfBoundsException] should be thrownBy :
