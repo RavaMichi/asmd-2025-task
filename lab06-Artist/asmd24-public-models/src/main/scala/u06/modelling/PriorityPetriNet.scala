@@ -2,20 +2,18 @@ package u06.modelling
 
 import PetriNet.*
 
-import scala.annotation.tailrec
-object PetriNetWithPriority:
-
-  type PetriNetWithPriority[P] = Seq[PetriNet[P]]
+object PriorityPetriNet:
+  type PriorityPetriNet[P] = Seq[PetriNet[P]]
   case class PriorityTrn[P, I](priority: I, transition: Trn[P])
 
-  def apply[P, I](transitions: PriorityTrn[P, I]*)(implicit ordering: Ordering[I]): PetriNetWithPriority[P] =
+  def apply[P, I](transitions: PriorityTrn[P, I]*)(implicit ordering: Ordering[I]): PriorityPetriNet[P] =
     transitions
       .groupBy[I](_.priority)
       .toSeq
       .sortWith((a, b) => ordering.gt(a._1, b._1))
       .map((i, trn) => trn.map(_.transition).toSet)
 
-  extension [P](pnp: PetriNetWithPriority[P])
+  extension [P](pnp: PriorityPetriNet[P])
     def toSystem: System[Marking[P]] = m => pnp match
       case Seq() => Set() // nothing
       case h +: tail =>
