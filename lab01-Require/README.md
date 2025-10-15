@@ -185,3 +185,54 @@ Extensions:
     1a: Ebike sends data in an unexpected format
         1. System ignores message
 ```
+
+### Quality Attributes
+
+Le user stories e gli scenarios riescono a descrivere adeguatamente i requisiti funzionali del servizio, tuttavia non reiscono a esprimere le qualita' architetturali che il sistema deve soddisfare per poter funzionare correttamente. Il sistema, come da requisiti, deve essere disponibile e reattivo. Per poter testare queste proprieta', si sono scritti dei *Quality Attribute Scenarios*:
+
+| Quality Attribute: | Availability |
+| ------ | ------ |
+| Source | Server hosting a service |
+| Stimulus | Server fails |
+| Artifact | Server |
+| Environment | Normal operation |
+| Response | Server restarts |
+| Response measure | Service downtime less than 1 min |
+
+| Quality Attribute: | Responsiveness |
+| ------ | ------ |
+| Source | Server hosting a service |
+| Stimulus | Server receives a request |
+| Artifact | Server |
+| Environment | Overloaded operation |
+| Response | Server replies (with correct values or with error) |
+| Response measure | Request is managed in less than 5 sec |
+
+## Codifica in Gherkin
+
+Partendo dalgi appena definiti scenarios, user stories e QAS, si possono ora definire utilizzando *Gherkin* i requisiti del servizio.
+
+Per ogni user story e' stato creato un file separato che corrisponde a una feature di Gherkin, e all'interno di essa sono contenuti gli scenarios inerenti a quella user story, mostrati con le possibili variazioni. Si sono descritti con Gherkin anche i quality attributes.
+
+I file generati sono i seguenti:
+ - [QAS-Availability.feature](./feature/QAS-Availability.feature)
+ - [User-Login.feature](./feature/User-Login.feature)
+ - [User-ConnectToEBike.feature](./feature/User-ConnectToEBike.feature)
+ - [User-DisconnectFromEBike.feature](./feature/User-DisconnectFromEBike.feature)
+ - [User-CreditRecharge.feature](./feature/User-CreditRecharge.feature)
+
+ - [Admin-AddEBike.feature](./feature/Admin-AddEBike.feature)
+ - [Admin-MonitorEBike.feature](./feature/Admin-MonitorEBike.feature)
+
+ - [EBike-PeriodicNotification.feature](./feature/EBike-PeriodicNotification.feature)
+ 
+ - [QAS-Availability.feature](./feature/QAS-Availability.feature)
+ - [QAS-Responsiveness.feature](./feature/QAS-Responsiveness.feature)
+
+## Conclusioni
+
+L’analisi del progetto è stata condotta adottando un approccio Domain-Driven, che si è rivelato particolarmente efficace per la definizione dei requisiti. In questo contesto, la modellazione orientata al dominio ha permesso di identificare con chiarezza le user stories, le quali si sono tradotte in modo quasi immediato nelle corrispondenti feature Gherkin. L’utilizzo di tale metodologia ha reso il passaggio dalla descrizione narrativa del problema alla formalizzazione dei requisiti testabili semplice e naturale.
+
+Un ulteriore risultato significativo riguarda l’applicazione del linguaggio Gherkin anche ai quality attributes, ossia ai requisiti non funzionali. Attraverso la definizione di scenari mirati, è stato possibile descrivere e successivamente testare proprietà architetturali del sistema, come disponibilità e tempi di risposta, trasformandole in feature verificabili.
+
+Gherkin si conferma quindi uno strumento estremamente potente, poiché consente di esprimere in linguaggio naturale i requisiti del sistema, mantenendo una forma comprensibile ai diversi stakeholder e al tempo stesso traducibile in test automatici. A differenza degli unit test, esso permette di operare a un livello di astrazione più alto, focalizzato sugli obiettivi funzionali e non funzionali del sistema. È tuttavia fondamentale accompagnare la definizione delle feature con la descrizione dettagliata degli scenarios, che rappresentano i veri acceptance test e garantiscono la validazione dei requisiti.
