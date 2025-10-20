@@ -103,14 +103,6 @@ Example output (what you should reply):
 
 Di seguito i risultati ottenuti con PRISM (ground truth) e le risposte dei quattro LLM.
 
-| Proprietà                          |       PRISM | GPT-5 Thinking Mini | Gemini 2.5 Pro | Claude Sonnet 4.5 |           Deepseek |
-| ---------------------------------- | ----------: | ------------------: | -------------: | ----------------: | -----------------: |
-| "Rainy"                         |        true |                true |           true |              true |               true |
-| P=?["Rainy" & X "Cloudy"]       |        0.15 |                0.15 |           0.15 |              0.15 |              0.105 |
-| P=?[ X "Sunny" & X X "Cloudy" ] |       0.015 |               0.015 |          0.015 |             0.015 |              0.015 |
-| P=?[ F<=10 "Sunny" ]            | 0.446998531 | 0.44699853156562475 | 0.447849690625 |      0.9999990463 | 0.9999999999999998 |
-| P=?[ G<=10 "Rainy" ]            | 0.107374182 |        0.1073741824 |   0.1073741824 |      0.1073741824 |                0.0 |
-| S=?["Cloudy"]                   | 0.168750107 |             0.16875 |        0.16875 |    0.230769230769 | 0.2666666666666667 |
 ### Risposte
 
 **GPT-5 Thinking Mini**
@@ -167,19 +159,38 @@ Let me recalculate: From s=0, prob to s=1 is 0.05. From s=1, prob to s=2 is 0.3.
 6. **0.638** - Steady-state probability of being in "Cloudy" state (requires solving stationary distribution)
 ```
 
+**DeepSeek**
+
+```txt
+1. true - "The initial state satisfies Rainy"
+2. 0.15 - "Probability that next state is Cloudy"
+3. 0.015 - "Probability that next state is Sunny and the state after that is Cloudy"
+4. 0.9999999999999999 - "Probability of eventually reaching Sunny within 10 steps"
+5. 0.0 - "Probability of always staying Rainy for 10 steps"
+6. 0.25 - "Long-run probability of being in Cloudy state"
+```
+
 ### Tabella coi risultati
 
+| Proprietà                       |       PRISM | GPT-5 Thinking Mini | Gemini 2.5 Pro | Claude Sonnet 4.5 |           Deepseek |
+| ------------------------------- | ----------: | ------------------: | -------------: | ----------------: | -----------------: |
+| "Rainy"                         |        true |                true |           true |              true |               true |
+| P=?[ X "Cloudy" ]               |        0.15 |                0.15 |           0.15 |              0.15 |              0.105 |
+| P=?[ X "Sunny" & X X "Cloudy" ] |       0.015 |               0.015 |          0.015 |             0.015 |              0.015 |
+| P=?[ F<=10 "Sunny" ]            | 0.446998531 |        0.4469985316 |  0.44513396925 |            0.3275 | 0.9999999999999999 |
+| P=?[ G<=10 "Rainy" ]            | 0.107374182 |        0.1073741824 |   0.1073741824 |             0.107 |                0.0 |
+| S=?["Cloudy"]                   | 0.168750107 |             0.16875 |        0.16875 |             0.638 |               0.25 |
 
 ## Analisi risultati
 
-* **Accuratezza generale**: GPT-5 Thinking Mini e Gemini 2.5 Pro forniscono risposte molto vicine al ground truth di PRISM su quasi tutte le proprietà, con differenze minime dovute probabilmente a precisione numerica. Claude e Deepseek presentano deviazioni significative su alcune proprietà (in particolare le proprietà temporali 4 e 6).
+* **Accuratezza complessiva**: GPT-5 Thinking Mini e Gemini 2.5 Pro risultano i più coerenti con PRISM, e mostrano valori pressoché identici per tutte le proprietà. Le piccole differenze osservate sono compatibili con arrotondamenti numerici e non influenzano la correttezza del risultato. Claude Sonnet 4.5 e Deepseek, invece, evidenziano deviazioni più marcate, soprattutto nelle proprietà con orizzonte temporale/semantica più complessa.
 
-* **Proprietà 4 (reachability bounded)**: mentre PRISM, GPT-5 e Gemini sono allineati (∼0.447), Claude e Deepseek riportano valori praticamente unitari per questa probabilità: probabilmente hanno avuto sbagliato nell'interpretazione dell'operatore temporale o nel calcolo iterativo.
+* **Proprietà 4 (raggiungibilità limitata)**: PRISM, GPT-5 e Gemini convergono su un valore realistico (∼0.447), Claude si avvicina al risultato corretto, mentre Deepseek riporta probabilità prossime a 1. Questo suggerisce un errore di calcolo dell'operatore temporale *F<=10*, probabilmente trattato come *F* non limitato o come evento certo nel lungo periodo, infatti la sua interpretazione della proprietà risulta corretta.
 
-* **Proprietà 6 (steady-state)**: GPT-5 e Gemini sono coerenti con la precisione limitata; Claude e Deepseek danno valori più alti, indicando stime errate della distribuzione stazionaria o di interpretazione della query `S=?["Cloudy"]`.
+* **Proprietà 5 (invarianza limitata)**: GPT-5, Gemini e Claude calcolano correttamente la probabilità di permanere in stato *Rainy* per 10 passi (∼0.107), mentre Deepseek evidenzia inconsistenze numeriche, nonostante comprenda il significato della proprietà.
+
+* **Proprietà 6 (stazionarietà)**: GPT-5 e Gemini forniscono stime accurate e coerenti con la distribuzione stazionaria del modello, mentre Claude e Deepseek sovrastimano il valore.
 
 ## Conclusione
 
-I LLM più sofisticati (qui GPT-5 e Gemini) riescono a emulare con buona precisione il comportamento di uno model checker per proprietà semplici e a breve orizzonte temporale, ma restano fragili su proprietà temporali più complesse o interpretazioni formali non banali. Claude Sonnet 4.5 e Deepseek mostrano invece difficoltà maggiori, e talvolta forniscono risultati non plausibili rispetto ai risultati di PRISM.
-
-Per usi pratici, i LLM possono essere utili come supporto qualitativo o per verifiche rapide, ma non sostituiscono uno strumento formale come PRISM quando è richiesta certezza numerica.
+GPT-5 Thinking Mini e Gemini 2.5 Pro dimostrano una notevole capacità di comprendere la semantica di PRISM e di stimare in modo coerente le proprietà stocastiche, anche in assenza di strumenti esterni. Tuttavia, la fedeltà dei risultati cala sensibilmente quando le proprietà richiedono ragionamenti su orizzonti temporali lunghi o interpretazioni formali più sottili. Claude Sonnet 4.5 e Deepseek, invece, mostrano limiti evidenti nella gestione dei concetti di probabilità nel tempo e delle condizioni di stazionarietà. In sintesi, i LLM possono rappresentare un valido supporto analitico preliminare, ma non sono ancora un sostituto affidabile per la verifica quantitativa formale offerta da strumenti come PRISM, nonostante riescano a comprenderne correttamente le proprietà.
